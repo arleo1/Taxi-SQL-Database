@@ -1,0 +1,76 @@
+CREATE TABLE [driver] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [first_name] nvarchar(120),
+  [last_name] nvarchar(120),
+  [birth_date] date,
+  [license_num] nvarchar(120),
+  [join_date] date,
+  [cab_id] int
+)
+GO
+
+CREATE TABLE [cab] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [license_plate] nvarchar(120),
+  [car_model] nvarchar(120),
+  [car_make] nvarchar(120),
+  [manufacture_year] int
+)
+GO
+
+CREATE TABLE [customer] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [f_name] nvarchar(120),
+  [l_name] nvarchar(120),
+  [address] nvarchar(120),
+  [state] nvarchar(120),
+  [zip] int,
+  [phone_num] nvarchar(120)
+)
+GO
+
+CREATE TABLE [trip] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [customer_id] int UNIQUE NOT NULL,
+  [cab_id] int UNIQUE NOT NULL,
+  [payment_id] int UNIQUE NOT NULL,
+  [start_location_id] int UNIQUE NOT NULL,
+  [end_location_id] int UNIQUE NOT NULL,
+  [trip_start_time] datetime,
+  [trip_end_time] datetime
+)
+GO
+
+CREATE TABLE [location] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [address] nvarchar(100),
+  [city] nvarchar(100),
+  [state] nvarchar(100),
+  [zip] int
+)
+GO
+
+CREATE TABLE [payment] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [type] nvarchar(100) NOT NULL CHECK ([type] IN ('credit card', 'cash', 'check')),
+  [amount] decimal
+)
+GO
+
+ALTER TABLE [driver] ADD FOREIGN KEY ([cab_id]) REFERENCES [cab] ([id])
+GO
+
+ALTER TABLE [trip] ADD FOREIGN KEY ([customer_id]) REFERENCES [customer] ([id])
+GO
+
+ALTER TABLE [trip] ADD FOREIGN KEY ([cab_id]) REFERENCES [cab] ([id])
+GO
+
+ALTER TABLE [trip] ADD FOREIGN KEY ([payment_id]) REFERENCES [payment] ([id])
+GO
+
+ALTER TABLE [trip] ADD FOREIGN KEY ([start_location_id]) REFERENCES [location] ([id])
+GO
+
+ALTER TABLE [trip] ADD FOREIGN KEY ([end_location_id]) REFERENCES [location] ([id])
+GO
